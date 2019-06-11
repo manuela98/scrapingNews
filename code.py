@@ -8,7 +8,7 @@ categories = ['antioquia','colombia','internacional','negocios','deportes','opin
 
 def getTitles(page,fileTitles):
     
-    """Get the titles of a page in a file"""
+    '''Get the titles of a page in a file'''
     
     soup = BeautifulSoup(page.text, 'html.parser')
     articulos = soup.find_all('article')
@@ -25,7 +25,7 @@ def getTitles(page,fileTitles):
 
 def MenuSelection(categories):
 
-    """Request the menu page and get the titles"""
+    '''Request the menu page and get the titles'''
 
     file = open('titles.txt','w+')
     for i in categories:
@@ -36,13 +36,17 @@ def MenuSelection(categories):
     return 0
 
 def FileProcessing(fileName):
-   data=file(fileName).readlines()
-   data = set(data)
-   data = sorted(data)
-   fileFiltered = open('filteredTitles.txt','w+')
-   for i in range(len(data)):
+    
+    '''remove the duplications and order the news'''
+   
+    data=file(fileName).readlines()
+    data = set(data)
+    data = sorted(data)
+    fileFiltered = open('filteredTitles.txt','w+')
+    for i in range(4,len(data)):
          fileFiltered.write(data[i])
          fileFiltered.write('\n')
+   
 
 MenuSelection(categories)
 FileProcessing('titles.txt')
