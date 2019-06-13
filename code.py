@@ -71,7 +71,6 @@ def getHourDateEspectador(text):
            hour = dateTitle.strftime("%I:%M %p")
            date =  dateTitle.strftime("%d/%m/%Y")
         if hour[2]=='mins':
-           print('yes')
            dateTitle= datetime.today()- timedelta(minutes=int(hour[1]))
            hour = dateTitle.strftime("%I:%M %p")
            date =  dateTitle.strftime("%d/%m/%Y")
@@ -107,7 +106,7 @@ def getInformationTiempo(page):
         
         try:
            title = article.findAll("h3",{"class":"title-container"})[0].text
-           hour = article.findAll("div",{"category-published"})[0].span.text
+           hour = article.findAll("div",{"class":"category-published"})[0].span.text
            date =  datetime.today()
            date =  date.strftime("%d/%m/%Y")
            data+=[[str(title),'Tiempo',date,hour]]
@@ -115,9 +114,27 @@ def getInformationTiempo(page):
            pass 
     return data
 
+def getInformationXataka(page):
+    """Get information page Xataka titulo,medio,fecha,hora."""
+    soup = BeautifulSoup(page.text, 'html.parser')
+    articles =  soup.findAll("div",{"class":"abstract-content"})
+    data = []
+    for article in articles:
+        title = article.findAll("h2",{"class":"abstract-title"})[0].text
+        hourDate = article.findAll("time",{"class":"abstract-date"})[0]
+        date = hourDate['datetime'].split('T')[0]
+        date = date.split('-')
+        date = datetime(int(date[0]),int(date[1]),int(date[2]))
+        date =  date.strftime("%d/%m/%Y")
+        hour = hourDate['datetime'].split('T')[1][:-6]
+        hour = hour.split(':')
+        today = datetime.today().replace(hour=int(hour[0]), minute=int(hour[1]))
+        hour = today.strftime("%I:%M %p")
+        data+=[[str(title),'Xataka',date,hour]]
+    return data
 
-   
 
 pageRequests('https://www.elcolombiano.com/','Colombiano',getInformationColombiano)
 pageRequests('https://www.elespectador.com/noticias','Espectador',getInformationEspectador)
 pageRequests('https://www.eltiempo.com/','Tiempo',getInformationTiempo)
+pageRequests('https://www.xataka.com/','Xataka',getInformationXataka)
