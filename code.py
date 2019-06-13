@@ -97,9 +97,27 @@ def getInformationEspectador(page):
             pass
     return data
 
+def getInformationTiempo(page):
+    """Get information page Tiempo titulo,medio,fecha,hora."""
+    data = []
+    soup = BeautifulSoup(page.text, 'html.parser')
+    articles = soup.findAll("div", \
+    {"class":"article-details"})
+    for article in articles:
+        
+        try:
+           title = article.findAll("h3",{"class":"title-container"})[0].text
+           hour = article.findAll("div",{"category-published"})[0].span.text
+           date =  datetime.today()
+           date =  date.strftime("%d/%m/%Y")
+           data+=[[str(title),'Tiempo',date,hour]]
+        except:
+           pass 
+    return data
+
 
    
 
 pageRequests('https://www.elcolombiano.com/','Colombiano',getInformationColombiano)
 pageRequests('https://www.elespectador.com/noticias','Espectador',getInformationEspectador)
-
+pageRequests('https://www.eltiempo.com/','Tiempo',getInformationTiempo)
