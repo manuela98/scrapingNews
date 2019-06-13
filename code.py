@@ -1,52 +1,64 @@
 import requests
 from bs4 import BeautifulSoup
-import codecs
-
-categories = ['antioquia','colombia','internacional','negocios','deportes','opinion']
-
+import pandas as pd 
+from datetime import datetime
 
 
-def getTitles(page,f):
-    
-    '''Get the titles of a page in a file'''
 
-  
+def findHour(article):
+    """Find the hour in an article."""
+    find = article.findAll("div", {"class": "categoria-noticia"})
+    hour = ''
+    date = ''
+    if len(find[0].text.split('|')[-1].split())==2:
+        hour = find[0].text.split('|')[-1]
+    else: 
+        date = find[0].text.split('|')[-1]
+    if date=='':
+       date= datetime.today()
+       date = date.strftime("%d/%m/%Y")
+    return hour,date
+
+
+def getInformation(page):
+    """Get the titles of a page in a file and hours"""
+    data = []
     soup = BeautifulSoup(page.text, 'html.parser')
-    articulos = soup.find_all('article')
-    for articulo in articulos:
+    articles = soup.find_all('article')
+    for article in articles:
         try:
-            titulo = articulo.span.text
-            f.write(titulo.encode('latin1').decode('utf-8'))
-            f.write('\n')
+            if  article.findAll("div", {"class": "categoria-noticia"}):
+                title = article.findAll("span", {"class": "priority-content"})[0].text
+                title = title.encode('latin1').decode('utf-8')
+                hour,date = findHour(article)
+                data+=[[str(title),'Colombiano',date,hour]]
         except: 
             pass
     
-    return 0
+    return data
 
 
-def MenuSelection(categories):
+def writeCsv(page):
+    """Write a csv with: titular, medio, fecha, hora"""
+    date= datetime.today()
+    date = date.strftime("%d-%m-%Y")
+    title = str(date)
+    data = getInformation(page)
+    df = pd.DataFrame(data, columns = ['titular','medio', 'fecha','hora']) 
+    df.to_csv(title+'_Colombiano.csv',index=False)
+    return None 
 
-    """Request the menu page and get the titles"""
-    f = open('titles.txt','w+')
-    for i in categories:
-        print('https://www.elcolombiano.com/'+i)
-        page = requests.get('https://www.elcolombiano.com/'+i)
-        getTitles(page,f)
-    f.close()
-    return 0
 
-def FileProcessing(fileName):
+def pageRequests():
+    """Request the menu page and get the titles."""
+    print('https://www.elcolombiano.com/')
+    page = requests.get('https://www.elcolombiano.com/')    
+    writeCsv(page)
+    return None
+
     
-    """Remove the duplications and order the news"""
-    file = open(fileName)
-    data=file.readlines()
-    data = set(data)
-    data = sorted(data)
-    fileFiltered = open('filteredTitles.txt','w+')
-    for i in range(4,len(data)):
-         fileFiltered.write(data[i])
-         fileFiltered.write('\n')
+
    
 
-MenuSelection(categories)
-FileProcessing('titles.txt')
+pageRequests()
+
