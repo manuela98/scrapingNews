@@ -44,7 +44,7 @@ def writeCsv(page):
     date = date.strftime("%d-%m-%Y")
     title = str(date)
     data = getInformation(page)
-    df = pd.DataFrame(data, columns = ['Titular','Medio', 'Fecha','Hora']) 
+    df = pd.DataFrame(data, columns = ['titular','medio', 'fecha','hora']) 
     df.to_csv(title+'_Colombiano.csv',index=False)
     return None 
 
