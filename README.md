@@ -3,6 +3,6 @@
 This module is a tool for the extraction of journalistic news on the web, implemented for:  
 - El Colombiano.  
 - El Tiempo.  
-- El espectador.   
+- El Espectador.   
 Colombian journalism.  
 
