@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime,timedelta
 
 def writeCsv(page,medium,getInformation):
-    """Write a csv with: titular, medio, fecha, hora"""
+    """Write a csv with: titular, medio, fecha, hora."""
     date= datetime.today()
     date = date.strftime("%d-%m-%Y")
     title = str(date)
@@ -40,7 +40,7 @@ def findHourColombiano(article):
 
 
 def getInformationColombiano(page):
-    """Get the titles of a page in a file and hours"""
+    """Get the titles of a page in a file and hours."""
     data = []
     soup = BeautifulSoup(page.text, 'html.parser')
     articles = soup.find_all('article')
@@ -57,7 +57,7 @@ def getInformationColombiano(page):
     return data
 
 def getHourDateEspectador(text):
-    """Get hour and date from Espectador"""
+    """Get hour and date from Espectador."""
     hour = ''
     date = ''
     try: 
@@ -70,19 +70,25 @@ def getHourDateEspectador(text):
            dateTitle= datetime.today()- timedelta(hours=int(hour[1]))
            hour = dateTitle.strftime("%I:%M %p")
            date =  dateTitle.strftime("%d/%m/%Y")
-        else:
-           print(hour[2])
+        if hour[2]=='mins':
+           print('yes')
+           dateTitle= datetime.today()- timedelta(minutes=int(hour[1]))
+           hour = dateTitle.strftime("%I:%M %p")
+           date =  dateTitle.strftime("%d/%m/%Y")
 
     return hour,date
 
 def getInformationEspectador(page):
-    """get information page Espectador titulo,medio,fecha,hora"""
+    """Get information page Espectador titulo,medio,fecha,hora."""
     data = []
     soup = BeautifulSoup(page.text, 'html.parser')
-    articles = soup.findAll("div", {"class":"required-fields group-text-content field-group-html-element"})
+    articles = soup.findAll("div", \
+    {"class":"required-fields group-text-content field-group-html-element"})
     for article in articles:
-        title =  article.findAll("div", {"class":"node-title field field--name-title field--type-ds field--label-hidden"})
-        hour =  article.findAll("div", {"class":"node-post-date field field--name-post-date field--type-ds field--label-hidden"})
+        title =  article.findAll("div", \
+        {"class":"node-title field field--name-title field--type-ds field--label-hidden"})
+        hour =  article.findAll("div", \
+        {"class":"node-post-date field field--name-post-date field--type-ds field--label-hidden"})
         try:
             title = title[0].text[:-32]
             hour,date =  getHourDateEspectador(hour[0].text)
