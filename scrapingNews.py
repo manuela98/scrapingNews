@@ -16,7 +16,7 @@ def writeCsv(page,medium,getInformation):
 
 def pageRequests(page,medium,getInformation):
     """Request the menu page and get the titles."""
-    print(page)
+    print('Extracting from:' ,page)
     page = requests.get(page)    
     writeCsv(page,medium,getInformation)
     return None
@@ -25,7 +25,7 @@ def pageRequests(page,medium,getInformation):
 
 
 def findHourColombiano(article):
-    """Find the hour in an article."""
+    """Find the hour and date  in an article."""
     find = article.findAll("div", {"class": "categoria-noticia"})
     hour = ''
     date = ''
@@ -40,7 +40,7 @@ def findHourColombiano(article):
 
 
 def getInformationColombiano(page):
-    """Get the titles of a page in a file and hours."""
+    """Get information page Espectador titulo,medio,fecha,hora."""
     data = []
     soup = BeautifulSoup(page.text, 'html.parser')
     articles = soup.find_all('article')
@@ -71,7 +71,6 @@ def getHourDateEspectador(text):
            hour = dateTitle.strftime("%I:%M %p")
            date =  dateTitle.strftime("%d/%m/%Y")
         if hour[2]=='mins':
-           print('yes')
            dateTitle= datetime.today()- timedelta(minutes=int(hour[1]))
            hour = dateTitle.strftime("%I:%M %p")
            date =  dateTitle.strftime("%d/%m/%Y")
