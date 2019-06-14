@@ -11,6 +11,6 @@ This module is a tool for the extraction of journalistic news on the web, implem
 - Python 3.6.5  
 - Requests 2.18.4  
 - BS4 4.6.0   
-- datetime  
+- DateTime  
 
 
